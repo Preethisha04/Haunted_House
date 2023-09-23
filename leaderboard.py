@@ -25,8 +25,13 @@ class Leaderboard:
     in highest to lowest scores.
     '''
     def save(self):
-        #write your code here
-        pass
+        self.data.sort(key=lambda x: x["Score"], reverse=True)
+        with open(self.filename, mode='w', newline='') as file:
+            fieldnames = ["Name", "Score"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for entry in self.data:
+                writer.writerow(entry)
 
 
     '''
