@@ -184,26 +184,70 @@ The talk_to() should return the string "Updated score is {score}" if the user in
 else return the string "{npc['dialogue']} You need {required_item} if you need my help."
 If the mentioned npc doesnt exist in npcs then return "{character} is not there!"
 '''
-def     talk_to(tokens):
-    global score
-    character =      " ".join(tokens[tokens.index("talk") + 1:])
-    if character    in npcs:
-        required_item    = npcs[character]["requires"]
-        if required_item     in inventory:
-            if character     == "witch":
-                score =    witch_challenge(score)
-            elif character     == "knight":
-                score =   knight_challenge(score)
-            elif character ==   "ghost":
-                score =    ghost_challenge(score)
-            elif character     == "sorcerer":
-                score =    sorcerer_challenge(score)
-            return    f"Updated score is {score}."
-        else:
-            return    f"{npcs[character]['dialogue']} You need {required_item} if you want my help."
-    else:
-        return     f"{character} is not here!"
 
+def talk_to(tokens):
+    character = " ".join(tokens[tokens.index("talk") + 1:])
+    if character == "witch":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            print(npcs[character]['reward'])
+            return witch_challenge()
+        
+        else:
+            print(f"You need {npcs[character]['item_required']} if you need my help")
+
+    elif character == "knight":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            print(npcs[character]['reward'])
+            return knight_challenge()
+        
+        else:
+            print(f"You need {npcs[character]['item_required']} if you need my help")
+
+    elif character == "ghost":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            print(npcs[character]['reward'])
+            return ghost_challenge()
+        
+        else:
+            print(f"You need {npcs[character]['item_required']} if you need my help")
+
+    elif character == "sorcerer":
+        print(f"{npcs[character]['dialogue']}")
+        print(f"{npcs[character]['riddle']}")
+        ans = input()
+        if ans.lower == "piano":
+            print(npcs[character]['reward'])
+            return sorcerer_challenge()
+        
+        else:
+            print(f"You need to answer my riddle if you need my help")
+        
+    elif character == "magical dog":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            score += 20
+            print(npcs[character]['reward'])
+        
+        
+        else:
+            print(f"You need to {npcs[character]['item_required']} if you need my help")
+
+        
+    elif character == "queen":
+        print(f"{npcs[character]['dialogue']}")
+        print(f"{npcs[character]['riddle']}")
+        ans = input()
+        if ans.lower == "yes":
+            print(npcs[character]['reward'])
+            score += 20
+
+    if character == "witch" or character == "knight" or character == "ghost" or character == "sorcerer" or character == "queen":
+            print(f"Updated score is {score}")
+    else: 
+            print(f"{character} is not here!")
 
 
 
