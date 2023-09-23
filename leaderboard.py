@@ -41,7 +41,15 @@ class Leaderboard:
     '''
     def update(self, player_name, player_score):
         self.load()
-        #write your code hear
+        player_exists = False
+        for entry in self.data:
+            if entry["Name"] == player_name:
+                if player_score > entry["Score"]:
+                    entry["Score"] = player_score
+                player_exists = True
+                break
+        if not player_exists:
+            self.data.append({"Name": player_name, "Score": player_score})
         self.save()
 
 
