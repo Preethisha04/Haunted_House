@@ -185,21 +185,25 @@ else return the string "{npc['dialogue']} You need {required_item} if you need m
 If the mentioned npc doesnt exist in npcs then return "{character} is not there!"
 '''
 def talk_to(tokens):
-    global score, inventory
+    global score
     character = " ".join(tokens[tokens.index("talk") + 1:])
-    npc = npcs.get(character)
-
-    if npc:
-        challenge = npc.get("challenge")
-        required_item = challenge.get("required_item")
+    if character in npcs:
+        required_item = npcs[character]["requires"]
         if required_item in inventory:
-            new_score = challenge["challenge_func"](score)
-            score = new_score
-            return f"Updated score is {score}"
+            if character == "witch":
+                score = witch_challenge(score)
+            elif character == "knight":
+                score = knight_challenge(score)
+            elif character == "ghost":
+                score = ghost_challenge(score)
+            elif character == "sorcerer":
+                score = sorcerer_challenge(score)
+            return f"Updated score is {score}."
         else:
-            return f"{npc['dialogue']} You need {required_item} if you need my help."
+            return f"{npcs[character]['dialogue']} You need {required_item} if you want my help."
     else:
-        return f"{character} is not there!"
+        return f"{character} is not here!"
+
 
 
 
