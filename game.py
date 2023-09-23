@@ -39,28 +39,29 @@ If none of the key words exists in the tokens, return "I don't understand that c
 '''
 def handle_user_command(user_input):
     global current_room, score
-    tokens = process_user_input()
-    if "quit" in tokens:
-        quit_game()
+    processed_tokens = process_user_input(user_input)
+    if "quit" in processed_tokens:
+        return quit_game()
     
-    elif "look" in tokens:
-        look_around()
-
-    elif "take" in tokens:
-        take_item()
-
-    elif "inventory" in tokens:
-        inventory_status()
-
-    elif "go" in tokens:
-        go_to()
-
-    elif "talk" in tokens:
-        talk_to()
-
+    elif "look" in processed_tokens:
+        return look_around()
+    
+    elif "take" in processed_tokens:
+        return take_item(processed_tokens)
+    
+    elif "inventory" in processed_tokens:
+        return inventory_status()
+    
+    elif "go" in processed_tokens:
+        return go_to(processed_tokens)
+    
+    elif "talk" in processed_tokens:
+        return talk_to(processed_tokens)
+    
+    elif "unlock" in processed_tokens:
+        return unlock(processed_tokens)
     else:
         return "I don't understand that command."
-        
 
 
 '''
@@ -68,7 +69,8 @@ Return a string which gives the final score.
 '''
 def quit_game():
     #write code here
-    pass
+    global score
+    return f"Game over. Your final score is {score}"
 
 
 '''
@@ -196,7 +198,15 @@ Increase 50 points if the tresure box gets unlocked.
 Return appropriate message if any of the conditions are not met.
 '''
 def unlock(tokens):
-    pass
+    if rooms[current_room]=="bedroom":
+        if "old_book" in inventory:
+            print(rooms[current_room]['puzzle'])
+            score+=50
+            return "You read the old book and found a code. The locked treasure box has been unlocked."
+        else:
+            return "old_book not found"
+    else:
+        return "You are not in bedroom"
 
 
 
