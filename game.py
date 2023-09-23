@@ -95,8 +95,28 @@ Return an appropriate string for the either of the following cases:
 4. There is nothing to take in the room.
 '''
 def take_item(tokens):
+    global current_room, score
     item = " ".join(tokens[tokens.index("take") + 1:])
-    pass
+    room_dict = rooms[current_room]
+
+    if "items" in room_dict.getKeys():
+        if "treasure box" in room_dict[items] and room_dict[lock]:
+            return("Treasure box is locked")
+        
+        else:
+            for i in room_dict[items]:
+                inventory.append(i)
+                return_str = f"{return_str}, {i}"
+            room_dict[items].clear()
+            return f"Took the item(s) {return_str}"
+    
+    else:
+        return "There is nothing to take in this room"
+            
+        
+
+    
+    
 
 
 '''
@@ -188,7 +208,15 @@ Increase 50 points if the tresure box gets unlocked.
 Return appropriate message if any of the conditions are not met.
 '''
 def unlock(tokens):
-    pass
+    if rooms[current_room]=="bedroom":
+        if "old_book" in inventory:
+            print(rooms[current_room]['puzzle'])
+            score+=50
+            return "You read the old book and found a code. The locked treasure box has been unlocked."
+        else:
+            return "old_book not found"
+    else:
+        return "You are not in bedroom"
 
 
 
