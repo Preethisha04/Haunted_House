@@ -24,13 +24,13 @@ class Leaderboard:
     Write the save function that saves all the scores to the CSV file 
     in highest to lowest scores.
     '''
-    def save(self):
+    def      save(self):
         self.data.sort(key=lambda x: x["Score"], reverse=True)
-        with open(self.filename, mode='w', newline='') as file:
-            fieldnames = ["Name", "Score"]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
+        with open  (self.filename, mode='w', newline='')      as file:
+            fieldnames =    ["Name", "Score"]
+            writer =    csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
-            for entry in self.data:
+            for entry in      self.data:
                 writer.writerow(entry)
 
 
