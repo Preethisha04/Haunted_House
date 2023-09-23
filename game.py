@@ -38,7 +38,7 @@ return appropriate functions for each of those key words.
 If none of the key words exists in the tokens, return "I don't understand that command."
 '''
 def handle_user_command(user_input):
-    global current_room, score
+    #global current_room, score
     processed_tokens = process_user_input(user_input)
     if "quit" in processed_tokens:
         return quit_game()
@@ -159,19 +159,18 @@ Write a function to go to a different room based on the direction specified.
 Call handel_rats() function to check if rats exist
 Everytime user enters a new room, give the description of the room.
 '''
-def go_to(tokens):
-    global current_room
-    direction = tokens[tokens.index("go") + 1]
-    room_dict = rooms[current_room]
-    room_exits = room_dict[exits]
-    current_room = room_exits[direction]
-    rat_stat = handle_rats()
-    if rat_stat != None:
-        return rat_stat
+def    go_to(tokens):
+    global    current_room
+    direction    = tokens[tokens.index("go") + 1]
+    next_room    = rooms[current_room].get("exits", {}).get(direction)
+
+    if     next_room:
+        current_room     = next_room
+        rat_response   = handle_rats()
+        return    f"{rooms[current_room]['description']}{' ' + rat_response if rat_response else ''}"
     else:
-        room_dict = rooms[current_room]
-        room_desc = f"{room_dict[description]}"
-        return room_desc
+        return     "You cannot go that way."
+
     
 
 '''
