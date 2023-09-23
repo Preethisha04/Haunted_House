@@ -39,7 +39,28 @@ If none of the key words exists in the tokens, return "I don't understand that c
 '''
 def handle_user_command(user_input):
     global current_room, score
-    pass
+    tokens = process_user_input()
+    if "quit" in tokens:
+        quit_game()
+    
+    elif "look" in tokens:
+        look_around()
+
+    elif "take" in tokens:
+        take_item()
+
+    elif "inventory" in tokens:
+        inventory_status()
+
+    elif "go" in tokens:
+        go_to()
+
+    elif "talk" in tokens:
+        talk_to()
+
+    else:
+        return "I don't understand that command."
+        
 
 
 '''
