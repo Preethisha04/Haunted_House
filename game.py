@@ -184,6 +184,7 @@ The talk_to() should return the string "Updated score is {score}" if the user in
 else return the string "{npc['dialogue']} You need {required_item} if you need my help."
 If the mentioned npc doesnt exist in npcs then return "{character} is not there!"
 '''
+
 def talk_to(tokens):
     character = " ".join(tokens[tokens.index("talk") + 1:])
     if character == "witch":
@@ -247,6 +248,7 @@ def talk_to(tokens):
             print(f"Updated score is {score}")
     else: 
             print(f"{character} is not here!")
+
 
 
 
