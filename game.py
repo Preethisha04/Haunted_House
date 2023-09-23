@@ -184,9 +184,28 @@ The talk_to() should return the string "Updated score is {score}" if the user in
 else return the string "{npc['dialogue']} You need {required_item} if you need my help."
 If the mentioned npc doesnt exist in npcs then return "{character} is not there!"
 '''
-def talk_to(tokens):
-    character = " ".join(tokens[tokens.index("talk") + 1:])
-    pass
+def     talk_to(tokens):
+    global score
+    character =      " ".join(tokens[tokens.index("talk") + 1:])
+    if character    in npcs:
+        required_item    = npcs[character]["requires"]
+        if required_item     in inventory:
+            if character     == "witch":
+                score =    witch_challenge(score)
+            elif character     == "knight":
+                score =   knight_challenge(score)
+            elif character ==   "ghost":
+                score =    ghost_challenge(score)
+            elif character     == "sorcerer":
+                score =    sorcerer_challenge(score)
+            return    f"Updated score is {score}."
+        else:
+            return    f"{npcs[character]['dialogue']} You need {required_item} if you want my help."
+    else:
+        return     f"{character} is not here!"
+
+
+
 
 
 '''
