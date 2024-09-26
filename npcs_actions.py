@@ -14,7 +14,35 @@ def witch_challenge(npc,score):
     print(f"Witch: Excellent! {npc['reward']}")
     
     # Write code here
-
+    rand_num = random.randint(10,100)
+    
+    counter = 60
+    t = True
+    user_input = None
+    while t:
+        divmod(counter,60)
+        time.sleep(1)
+        counter -= 1
+        while t:
+            if 10 > rand_num >30:
+                print("The number is below 30")
+            elif 30 > rand_num >60:
+                print("The number is between 30 to 60")
+            elif 60 > rand_num >100:
+                print("The number is between 60 to 100")
+            
+            user_input = input("Enter your guess: ")
+            if user_input == rand_num :
+                print("You got it right")
+                score += 20
+                t = False
+            else:
+                print("Wrong answer!! Try again!!")
+                score -= 5
+        if counter == 0:
+            print("Time's up!!")
+            print(f"The answer was {rand_num}")
+            t = False
     return score
 
 
@@ -31,7 +59,15 @@ def knight_challenge(npc, score):
     words = ["HARDWORK", "SUNFLOWER", "HAUNTED", "MORGUE"]
 
     # Write code here
-
+    rand_word = random.choice(words)
+    word = random.sample(rand_word,len(rand_word))
+    jumbled = ''.join(word)
+    print(f"{jumbled} ---The given word is jumbled ")
+    user_input = input("Enter your answer: ")
+    if user_input == rand_word:
+        score += 20
+    else:
+        score -= 5
     return score
 
 
@@ -41,9 +77,11 @@ Print the dialougue and reward of the ghost.
 Award 20 points for finding the required item.
 '''
 def ghost_challenge(npc, score):
-    
     #Write your code here
-
+    print(f"Ghost: {npc['dialogue']}")
+    print(f"Ghost: {npc['reward']}")
+    
+    score += 20
     return score
 
 
@@ -56,7 +94,11 @@ else they loose 5 points.
 '''
 def sorcerer_challenge(npc, score):
     print(f"Sorcerer: {npc['dialogue']}")
-
-# write your code here
-
+    print("Riddle: ",{"sorcerer"["riddle"]})
+    ans=input()
+    if(ans=="piano"):
+        print({"sorcerer"["reward"]})
+        score+=20
+    else:
+        score-=5
     return score

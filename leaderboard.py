@@ -13,7 +13,10 @@ class Leaderboard:
     def load(self):
         self.data = []
         #write your code here
-        pass
+        file = csv.reader("/lb.csv")
+        for data in file:
+            dic = {data}
+            data.append(dic)
 
 
 
@@ -21,9 +24,14 @@ class Leaderboard:
     Write the save function that saves all the scores to the CSV file 
     in highest to lowest scores.
     '''
-    def save(self):
-        #write your code here
-        pass
+    def      save(self):
+        self.data.sort(key=lambda x: x["Score"], reverse=True)
+        with open  (self.filename, mode='w', newline='')      as file:
+            fieldnames =    ["Name", "Score"]
+            writer =    csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for entry in      self.data:
+                writer.writerow(entry)
 
 
     '''
@@ -33,7 +41,15 @@ class Leaderboard:
     '''
     def update(self, player_name, player_score):
         self.load()
-        #write your code hear
+        player_exists = False
+        for entry in self.data:
+            if entry["Name"] == player_name:
+                if player_score > entry["Score"]:
+                    entry["Score"] = player_score
+                player_exists = True
+                break
+        if not player_exists:
+            self.data.append({"Name": player_name, "Score": player_score})
         self.save()
 
 
@@ -41,6 +57,8 @@ class Leaderboard:
     Display the scores of each and every person in the leaderboard
     '''
     def display(self):
-        pass
+        r = csv.reader('/lb.csv')
+        for row in r:
+            print(row)
 
 

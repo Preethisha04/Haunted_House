@@ -26,7 +26,9 @@ Process the user's input by tokenizing and lemmatizing it, removing stop words.
 Return a list of processed tokens.
 """
 def process_user_input(user_input):
-    pass
+    tokens = word_tokenize(user_input.lower())
+    processed_tokens = [lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
+    return processed_tokens
 
 
 '''
@@ -36,8 +38,30 @@ return appropriate functions for each of those key words.
 If none of the key words exists in the tokens, return "I don't understand that command."
 '''
 def handle_user_command(user_input):
-    global current_room, score
-    pass
+    #global current_room, score
+    processed_tokens = process_user_input(user_input)
+    if "quit" in processed_tokens:
+        return quit_game()
+    
+    elif "look" in processed_tokens:
+        return look_around()
+    
+    elif "take" in processed_tokens:
+        return take_item(processed_tokens)
+    
+    elif "inventory" in processed_tokens:
+        return inventory_status()
+    
+    elif "go" in processed_tokens:
+        return go_to(processed_tokens)
+    
+    elif "talk" in processed_tokens:
+        return talk_to(processed_tokens)
+    
+    elif "unlock" in processed_tokens:
+        return unlock(processed_tokens)
+    else:
+        return "I don't understand that command."
 
 
 '''
@@ -45,7 +69,8 @@ Return a string which gives the final score.
 '''
 def quit_game():
     #write code here
-    pass
+    global score
+    return f"Game over. Your final score is {score}"
 
 
 '''
@@ -54,9 +79,12 @@ The information should include the description of the room and
 also the the items in the room if any
 '''
 def look_around():
-    #write code here
-    pass
-
+    global current_room
+    room_dict = rooms[current_room]
+    room_description = room_dict[description]
+    room_items = room_dict[items]
+    room_str = f"Description : {room_description}\nItems: {room_items}"
+    return room_str
 
 
 '''
@@ -72,15 +100,37 @@ Return an appropriate string for the either of the following cases:
 4. There is nothing to take in the room.
 '''
 def take_item(tokens):
+    global current_room, score
     item = " ".join(tokens[tokens.index("take") + 1:])
-    pass
+    room_dict = rooms[current_room]
+
+    if "items" in room_dict.getKeys():
+        if "treasure box" in room_dict[items] and room_dict[lock]:
+            return("Treasure box is locked")
+        
+        else:
+            for i in room_dict[items]:
+                inventory.append(i)
+                return_str = f"{return_str}, {i}"
+            room_dict[items].clear()
+            return f"Took the item(s) {return_str}"
+    
+    else:
+        return "There is nothing to take in this room"
+            
+        
+
+    
+    
 
 
 '''
 This function should return a string with the contents of the inventory
 '''
 def inventory_status():
-    pass
+    print('The items in the inventory is:')
+    for i in inventory:
+        print(i)
 
 
 '''
@@ -89,7 +139,18 @@ The user looses 30 points.
 Return a string of appropiate msg if rats exists else return None 
 '''
 def handle_rats():
-    pass
+    global current_room, score
+    room_dict = rooms[current_room]
+    rat_status = False                  # Initializing rat_status variable
+    if "rats" in room_dict.getKeys():       
+        rat_status = room_dict[rats]
+        if rat_status == True and "bread" in inventory:
+            score -= 30
+            return "You were attacked by rats, you lost 30 points"
+    else:
+        return None
+
+
 
 
 
@@ -98,9 +159,19 @@ Write a function to go to a different room based on the direction specified.
 Call handel_rats() function to check if rats exist
 Everytime user enters a new room, give the description of the room.
 '''
-def go_to(tokens):
-    direction = tokens[tokens.index("go") + 1]
-    pass
+def    go_to(tokens):
+    global    current_room
+    direction    = tokens[tokens.index("go") + 1]
+    next_room    = rooms[current_room].get("exits", {}).get(direction)
+
+    if     next_room:
+        current_room     = next_room
+        rat_response   = handle_rats()
+        return    f"{rooms[current_room]['description']}{' ' + rat_response if rat_response else ''}"
+    else:
+        return     "You cannot go that way."
+
+    
 
 '''
 Write a function to talk to the npcs.
@@ -112,9 +183,72 @@ The talk_to() should return the string "Updated score is {score}" if the user in
 else return the string "{npc['dialogue']} You need {required_item} if you need my help."
 If the mentioned npc doesnt exist in npcs then return "{character} is not there!"
 '''
+
 def talk_to(tokens):
     character = " ".join(tokens[tokens.index("talk") + 1:])
-    pass
+    if character == "witch":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            print(npcs[character]['reward'])
+            return witch_challenge()
+        
+        else:
+            print(f"You need {npcs[character]['item_required']} if you need my help")
+
+    elif character == "knight":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            print(npcs[character]['reward'])
+            return knight_challenge()
+        
+        else:
+            print(f"You need {npcs[character]['item_required']} if you need my help")
+
+    elif character == "ghost":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            print(npcs[character]['reward'])
+            return ghost_challenge()
+        
+        else:
+            print(f"You need {npcs[character]['item_required']} if you need my help")
+
+    elif character == "sorcerer":
+        print(f"{npcs[character]['dialogue']}")
+        print(f"{npcs[character]['riddle']}")
+        ans = input()
+        if ans.lower == "piano":
+            print(npcs[character]['reward'])
+            return sorcerer_challenge()
+        
+        else:
+            print(f"You need to answer my riddle if you need my help")
+        
+    elif character == "magical dog":
+        print(f"{npcs[character]['dialogue']}")
+        if npcs[character]['item_required'] in inventory:
+            score += 20
+            print(npcs[character]['reward'])
+        
+        
+        else:
+            print(f"You need to {npcs[character]['item_required']} if you need my help")
+
+        
+    elif character == "queen":
+        print(f"{npcs[character]['dialogue']}")
+        print(f"{npcs[character]['riddle']}")
+        ans = input()
+        if ans.lower == "yes":
+            print(npcs[character]['reward'])
+            score += 20
+
+    if character == "witch" or character == "knight" or character == "ghost" or character == "sorcerer" or character == "queen":
+            print(f"Updated score is {score}")
+    else: 
+            print(f"{character} is not here!")
+
+
 
 
 '''
@@ -126,7 +260,15 @@ Increase 50 points if the tresure box gets unlocked.
 Return appropriate message if any of the conditions are not met.
 '''
 def unlock(tokens):
-    pass
+    if rooms[current_room]=="bedroom":
+        if "old_book" in inventory:
+            print(rooms[current_room]['puzzle'])
+            score+=50
+            return "You read the old book and found a code. The locked treasure box has been unlocked."
+        else:
+            return "old_book not found"
+    else:
+        return "You are not in bedroom"
 
 
 
